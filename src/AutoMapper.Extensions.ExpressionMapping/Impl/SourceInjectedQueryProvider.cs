@@ -60,7 +60,7 @@ namespace AutoMapper.Extensions.ExpressionMapping.Impl
                 Inspector.StartQueryExecuteInterceptor(null, expression);
 
                 var sourceExpression = ConvertDestinationExpressionToSourceExpression(expression);
-                var sourceResult = InvokeSourceQuery(null, sourceExpression);
+                var sourceResult = InvokeSourceQuery(sourceExpression);
 
                 Inspector.SourceResult(sourceExpression, sourceResult);
                 return sourceResult;
@@ -271,12 +271,9 @@ namespace AutoMapper.Extensions.ExpressionMapping.Impl
                     )
                 );
 
-        private object InvokeSourceQuery(Type sourceResultType, Expression sourceExpression)
+        private object InvokeSourceQuery(Expression sourceExpression)
         {
-            var result = IsProjection<TSource>(sourceResultType)
-                ? _dataSource.Provider.CreateQuery(sourceExpression)
-                : _dataSource.Provider.Execute(sourceExpression);
-            return result;
+            return _dataSource.Provider.Execute(sourceExpression);
         }
 
         private static bool IsProjection<T>(Type resultType) => IsProjection(resultType) && resultType.GetGenericElementType() == typeof(T);
